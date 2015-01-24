@@ -59,23 +59,21 @@
 				var seq = [0,1,2,3,4,5,6,7,8,0,3,6,1,4,7,2,5,8,0,4,8,2,4,6];
 				
 				for(var i=0 ;i < seq.length; i+=3){
-					var xMatches = 0;
-					var oMatches = 0;
-					
-					for(var k=0; k < 3; k++){
-						var sq = board[seq[i +k]];
-						if(sq.data("occupied")) {
-							occupied[seq[i +k]] = 1;
-							if("X" == sq.data("type")){
-								xMatches++;
-							}else if("O" === sq.data("type")){
-								oMatches++;
-							}
-						}
-
+				  var xMatches = 0;
+				  var oMatches = 0;
+			      for(var k=0; k < 3; k++){
+				    var sq = board[seq[i +k]];
+					if(sq.data("occupied")) {
+					  occupied[seq[i +k]] = 1;
+					  if("X" == sq.data("type")){
+					    xMatches++;
+					   }else if("O" === sq.data("type")){
+					     oMatches++;
+					   }
 					}
-					if(xMatches === 3) { return endGame("X");}
-					else if(oMatches === 3){ return endGame("O"); }
+				  }
+				  if(xMatches === 3) { return endGame("X");}
+				  else if(oMatches === 3){ return endGame("O"); }
 				}
 				if(occupied === 9){ console.log(occupied); endGame(undefined,true); }
 				if(! gameOver){
@@ -109,15 +107,14 @@
 
 
 			function play(){
-				var b = $('#board');
 				board = [];
 				occupied = 0;
 				gameOver = false;
-				b.empty();
-				createBoard(b);
+				boardEl.empty();
+				createBoard();
 				turn = "X";
 				$('.sq').click(addPiece);
-				$("#message").html("It is " + turn + " turn");
+				setMessage("It is " + turn + " turn");
 			}
 
 			$('document').ready(function (){
