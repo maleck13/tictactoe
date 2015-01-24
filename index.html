@@ -1,0 +1,141 @@
+
+<html>
+	<head>
+		<style type="text/css">
+			#board{
+				width:400px;
+				height: 400px;
+				background-color: yellow;
+			}
+			.sq{
+				border: 1px solid black;
+				float:left; position:relative; background-color: white;
+				text-align: center;
+
+
+			}
+		</style>
+		<script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+		<script type="text/javascript">
+
+			var board = [];
+			var turn = "X";
+			var turns = 0;
+			var occupied = 0;
+			var boardEl;
+			var gameOver = false;
+
+			function createBoard(){
+				var lh = Math.floor((boardEl.width() -6)  / 3); // - 6px for boarder
+				for(var i=0; i < 9; i++){
+					createSquare(boardEl,lh,lh,i);
+				}
+			}
+
+			function createSquare(boardEl,width,height, index){
+				var el = boardEl.append("<div class='sq' id='"+index+"' style='width:"+width+"px; height:"+height+"px; line-height: "+height+"px; '></div>");
+				board.push(el);
+			}
+
+			function addPiece(){
+				
+				var el = $(this);
+				var elIndex = el.attr("id");
+				if(el.data("occupied")){
+					alert("square taken");
+					return;
+				}
+				el.append("<span style='font-size:16px; font-weight:bold; vertical-align: middle;'>"+turn+"</span>")
+				el.data("occupied",true);
+				el.data("type",turn);
+				board[elIndex] = el;
+				occupied++;
+				checkGameState();
+
+			}
+
+			function checkGameState(){
+
+				var seq = [0,1,2,3,4,5,6,7,8,0,3,6,1,4,7,2,5,8,0,4,8,2,4,6];
+				
+				for(var i=0 ;i < seq.length; i+=3){
+					var xMatches = 0;
+					var oMatches = 0;
+					
+					for(var k=0; k < 3; k++){
+						var sq = board[seq[i +k]];
+						if(sq.data("occupied")) {
+							occupied[seq[i +k]] = 1;
+							if("X" == sq.data("type")){
+								xMatches++;
+							}else if("O" === sq.data("type")){
+								oMatches++;
+							}
+						}
+
+					}
+					if(xMatches === 3) { return endGame("X");}
+					else if(oMatches === 3){ return endGame("O"); }
+				}
+				if(occupied === 9){ console.log(occupied); endGame(undefined,true); }
+				if(! gameOver){
+					incrementTurn();
+				}
+
+			}
+
+			function endGame(winner,draw){
+				var msg;
+				if(draw){
+					msg = "The game was a draw. Click play to start again";
+				}else{
+					msg = winner + " Wins . Click play to start again";
+				}
+				setMessage(msg);
+				$('.sq').unbind();
+				alert(msg);
+				gameOver = true;
+			}
+
+			function incrementTurn(){
+				turns++;
+				turn = "X" === turn ? "O" : "X";
+				setMessage("It is " + turn + " turn");
+			}
+
+			function setMessage(msg){
+				$("#message").html(msg);
+			}
+
+
+			function play(){
+				var b = $('#board');
+				board = [];
+				occupied = 0;
+				gameOver = false;
+				b.empty();
+				createBoard(b);
+				turn = "X";
+				$('.sq').click(addPiece);
+				$("#message").html("It is " + turn + " turn");
+			}
+
+			$('document').ready(function (){
+			    boardEl = $('#board');
+				createBoard();
+				$('#clear').click(play);
+			});
+
+		</script>
+	</head>
+
+	<body>
+		<h2 id="message">Welcome To Tictactoe: Click Play to start</h2>
+		<div id="board">
+
+		</div>
+		<button id="clear">Play</button>	
+
+	</body>	
+
+</html>
