@@ -64,7 +64,6 @@
                 for (var k = 0; k < 3; k++) {
                     var sq = board[seq[i + k]];
                     if (sq.data("occupied")) {
-                        occupied[seq[i + k]] = 1;
                         if ("X" == sq.data("type")) {
                             xMatches++;
                         } else if ("O" === sq.data("type")) {
